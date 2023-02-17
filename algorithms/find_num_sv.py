@@ -12,7 +12,7 @@ def find_num_sv(image, U, S, Vt, energy_ratio=0.95):
     # Compute total energy
     energy = np.sum(S ** 2)
 
-    # Compute cumulative energy ratios for each channel
+    # Compute cumulative energy ratios
     cum_energy = np.cumsum(S ** 2) / energy
 
     # Find the smallest number of singular values for each channel that captures the desired energy ratio
