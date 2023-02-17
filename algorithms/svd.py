@@ -22,35 +22,41 @@ import numpy as np
 # constituent parts, and they have many useful applications in linear algebra and beyond.
 
 def svd(matrix):
-    # Compute the singular value decomposition of the matrix
-    # using the power iteration method
-    n, m = matrix.shape
-    max_iter = 100
-    eps = 1e-10
+    """
+    Computes the Singular Value Decomposition of a matrix using the power iteration method.
 
-    # Initialize the matrices U and V
-    U = np.random.rand(n, n)
-    V = np.random.rand(m, m)
+    Parameters:
+        matrix (ndarray): The input matrix.
 
-    # Power iteration to find the dominant eigenvectors
-    for i in range(max_iter):
-        V = matrix.T @ U
-        V_norm = np.linalg.norm(V, axis=0)
-        V /= V_norm
-        U = matrix @ V
-        U_norm = np.linalg.norm(U, axis=0)
-        U /= U_norm
+    Returns:
+        U (ndarray): The left singular vectors.
+        s (ndarray): The singular values.
+        Vt (ndarray): The right singular vectors (transposed).
+    """
+    # Compute the matrix product of A and A_transpose to find the eigenvalues
+    A = matrix @ matrix.T
+    n = matrix.shape[0]
 
-    # Compute the singular values and sort them in descending order
-    singular_values = np.diag(U.T @ matrix @ V)
-    sorted_indices = np.argsort(singular_values)[::-1]
-    singular_values = singular_values[sorted_indices]
+    # Use the eig function to find the eigenvalues and eigenvectors
+    eigenvalues, eigenvectors = np.linalg.eig(A)
 
-    # Sort the columns of U and V according to the sorted singular values
-    U = U[:, sorted_indices]
-    V = V[:, sorted_indices]
+    # Sort the eigenvectors in descending order of eigenvalues
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvectors = eigenvectors[:, sorted_indices]
 
-    return U, singular_values, V.T
+    # Calculate the singular values
+    s = np.sqrt(eigenvalues[sorted_indices])
+
+    # Compute the right singular vectors
+    Vt = (eigenvectors.T @ matrix) / s
+
+    # Compute the left singular vectors
+    U = np.zeros((n, n))
+    for i in range(n):
+        U[:, i] = matrix @ Vt[:, i]
+
+    return U, s, Vt
+
 
 # The code above computes the SVD of a given matrix using the power iteration method. The function takes in a matrix
 # as input and returns three matrices U, S, and V such that matrix = U @ np.diag(S) @ V.T.
