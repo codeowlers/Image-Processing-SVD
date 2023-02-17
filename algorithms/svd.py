@@ -33,6 +33,7 @@ def svd(matrix):
     np.fill_diagonal(diagonal_matrix, np.sqrt(eigenvalues))
     U = np.dot(eigenvectors.T, matrix).T
     V = np.dot(np.dot(transpose, eigenvectors), np.linalg.inv(diagonal_matrix))
+
     return U, diagonal_matrix, V
 
 # This code computes the SVD of a matrix using the fact that the left singular vectors can be computed as the
