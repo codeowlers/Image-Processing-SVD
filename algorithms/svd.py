@@ -58,14 +58,11 @@ def svd(matrix):
     return U, s, Vt
 
 
-# The code above computes the SVD of a given matrix using the power iteration method. The function takes in a matrix
-# as input and returns three matrices U, S, and V such that matrix = U @ np.diag(S) @ V.T.
-#
-# The power iteration method is used to iteratively find the dominant eigenvectors of the matrix until convergence.
-# In each iteration, we compute the matrix V by multiplying the transpose of the matrix U with the input matrix,
-# and normalize the columns of V. We then compute the matrix U by multiplying the input matrix with V and normalize
-# the columns of U. This process is repeated for a fixed number of iterations or until convergence.
-#
-# After computing U and V, we compute the singular values by taking the diagonal elements of the matrix U.T @ matrix
-# @ V. We sort the singular values in descending order and sort the columns of U and V accordingly. Finally,
-# we return the sorted U, S, and V matrices.
+# This code computes the SVD of a matrix using the fact that the left singular vectors can be computed as the
+# eigenvectors of the matrix product A * A_transpose, and the right singular vectors can be computed from the
+# eigenvectors of A_transpose * A. The singular values can be calculated as the square root of the eigenvalues,
+# and the columns of the left and right singular vectors can be normalized to have unit length.
+
+# This implementation handles the case where the matrix is not full rank by using the eig function to compute the
+# eigenvalues and eigenvectors of A. Note that this code assumes that the matrix is square, since the left singular
+# vectors are computed as a matrix product involving the original matrix.
