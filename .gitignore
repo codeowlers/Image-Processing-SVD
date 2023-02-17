@@ -168,3 +168,5 @@ fabric.properties
 
 # Saved compressed images
 /compressed-images
+
+ignore.ipynb

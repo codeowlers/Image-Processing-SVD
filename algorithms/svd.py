@@ -21,37 +21,41 @@ import numpy as np
 # In summary, the matrices U, Σ, and V^T returned from the SVD of a matrix A provide a way to decompose A into its
 # constituent parts, and they have many useful applications in linear algebra and beyond.
 
+import numpy as np
 
-def svd(matrix):
-    transpose = np.transpose(matrix)
-    square_matrix = np.dot(matrix, transpose)
-    eigenvalues, eigenvectors = np.linalg.eig(square_matrix)
-    indices = eigenvalues.argsort()[::-1]
-    eigenvalues = eigenvalues[indices]
-    eigenvectors = eigenvectors[:, indices]
-    diagonal_matrix = np.zeros_like(square_matrix)
-    np.fill_diagonal(diagonal_matrix, np.sqrt(eigenvalues))
-    U = np.dot(eigenvectors.T, matrix).T
-    V = np.dot(np.dot(transpose, eigenvectors), np.linalg.inv(diagonal_matrix))
-
-    return U, diagonal_matrix, V
-
-# This code computes the SVD of a matrix using the fact that the left singular vectors can be computed as the
-# eigenvectors of the matrix product A * A_transpose, and the right singular vectors can be computed from the
-# eigenvectors of A_transpose * A. The singular values can be calculated as the square root of the eigenvalues,
-# and the columns of the left and right singular vectors can be normalized to have unit length.
-
-# This implementation handles the case where the matrix is not full rank by using the eig function to compute the
-# eigenvalues and eigenvectors of A. Note that this code assumes that the matrix is square, since the left singular
-# vectors are computed as a matrix product involving the original matrix.
+def svd(A):
+    #Compute the Singular Value Decomposition (SVD) of a matrix A.
+    #Returns the matrices U, S, and V such that A = U*S*V.T.
+    #Uses Eigenvalue Decomposition (EVD) method to compute SVD.
+    
+    # Compute eigenvalues and eigenvectors of A*A.T
+    eigenvals, U = np.linalg.eigh(np.dot(A, A.T))
+    
+    # Sort eigenvalues in decreasing order and corresponding eigenvectors
+    idx = eigenvals.argsort()[::-1]
+    eigenvals = eigenvals[idx]
 
 
+    # the matrix U is the matrix of left singular vectors of A.
+    # It is an orthogonal matrix of size M x M, where M is the number of rows of A. 
+    # The columns of U are the eigenvectors of A*A.T, and they are arranged in decreasing order 
+    # of corresponding singular values in the diagonal matrix S.
+    U = U[:, idx]
+    
+    # Compute singular values and matrix of right singular vectors
+    
+    # The matrix of singular values, S, is computed from the eigenvalues of the matrix AA.T or A.TA. 
+    # Specifically, the singular values are the square root of
+    # the non-zero eigenvalues of AA.T or A.TA, sorted in descending order.
+    S = np.sqrt(eigenvals)
 
-# Find the transpose of the matrix.
-# Multiply the matrix and its transpose to get a square matrix.
-# Find the eigenvalues and eigenvectors of the square matrix.
-# Sort the eigenvalues in decreasing order and arrange the corresponding eigenvectors in the same order.
-# Form the diagonal matrix by placing the square root of the eigenvalues along the diagonal.
-# Multiply the original matrix with the eigenvectors to get the U matrix.
-# Multiply the transpose of the matrix with the eigenvectors and multiply it with the inverse of the diagonal matrix to get the V matrix.
-# Return the U, S, and V matrices as the SVD of the original matrix.
+
+    # the matrix V is the matrix of right singular vectors of A.
+    # It is an orthogonal matrix of size N x N, where N is the number of columns of A. 
+    # The columns of V are the eigenvectors of A.T*A, and they are arranged in decreasing order
+    # of corresponding singular values in the diagonal matrix S.
+    V = np.dot(np.dot(A.T, U), np.diag(1.0 / S))
+    
+    return U, S, V.T
+
+
