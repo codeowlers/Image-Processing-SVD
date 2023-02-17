@@ -30,5 +30,5 @@ def evaluate_ssim(original_image, compressed_image):
         float: The SSIM value between the two images.
     """
     ssim = structural_similarity(original_image, compressed_image,
-                                 data_range=original_image.max() - original_image.min(), multichannel=True)
+                                 data_range=original_image.max() - original_image.min(), channel_axis = -1)
     return ssim
