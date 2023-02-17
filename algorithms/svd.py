@@ -1,5 +1,26 @@
 import numpy as np
 
+
+# In linear algebra, the singular value decomposition (SVD) is a matrix factorization that decomposes a matrix into
+# three matrices. If A is an m x n matrix, then its SVD is given by:
+#
+# A = UΣV^T
+#
+# where U is an m x m unitary matrix, Σ is an m x n diagonal matrix with non-negative real numbers on the diagonal (
+# the singular values), and V^T is the transpose of an n x n unitary matrix V.
+#
+# In this factorization, the columns of U are called the left singular vectors, the columns of V are called the right
+# singular vectors, and the diagonal entries of Σ are called the singular values.
+#
+# The matrices U and V have special properties that make them useful for a variety of applications, including
+# dimensionality reduction, data compression, and matrix approximation. For example, the first k columns of U and V
+# can be used to approximate A with a rank-k matrix, where k is a positive integer less than or equal to the rank of
+# A. The singular values themselves provide information about the importance of each singular vector in the
+# approximation.
+#
+# In summary, the matrices U, Σ, and V^T returned from the SVD of a matrix A provide a way to decompose A into its
+# constituent parts, and they have many useful applications in linear algebra and beyond.
+
 def svd(matrix):
     # Compute the singular value decomposition of the matrix
     # using the power iteration method
@@ -30,7 +51,6 @@ def svd(matrix):
     V = V[:, sorted_indices]
 
     return U, singular_values, V.T
-
 
 # The code above computes the SVD of a given matrix using the power iteration method. The function takes in a matrix
 # as input and returns three matrices U, S, and V such that matrix = U @ np.diag(S) @ V.T.
