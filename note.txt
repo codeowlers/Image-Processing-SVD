@@ -1,0 +1,15 @@
+1.Preprocessing: The first step is to preprocess the digital image by converting it to grayscale and resizing it to a manageable size. This reduces the number of computations required to perform SVD on the image.
+
+2. Decomposition: The next step is to perform SVD on the preprocessed image. SVD decomposes the image matrix into three matrices: U, Σ, and V. U and V are orthogonal matrices, and Σ is a diagonal matrix with singular values in descending order.
+
+3. Compression: The image compression is achieved by truncating the Σ matrix by removing the singular values with a low magnitude. The number of singular values retained determines the degree of compression. The more singular values removed, the higher the compression ratio but also the lower the image quality.
+
+4. Reconstruction: The compressed image is reconstructed by multiplying the three truncated matrices. The reconstructed image may have a lower image quality due to the loss of information during the compression process.
+
+Evaluation: The final step is to evaluate the performance of the image compression algorithm. The image quality can be measured using metrics such as peak signal-to-noise ratio (PSNR) and structural similarity index (SSIM). The compression ratio can be calculated by dividing the size of the compressed image by the size of the original image.
+
+Optimization: The algorithm can be optimized by experimenting with different compression ratios and preprocessing techniques to achieve a balance between image quality and compression ratio.
+
+Implementation: Finally, the algorithm can be implemented in a software application that can be used to compress and decompress digital images. The software should be user-friendly and capable of handling different image formats.
+
+By following these steps, you can create an image compression algorithm using SVD that can reduce the size of digital images while maintaining image quality. The algorithm can be useful in applications such as image storage, transmission, and processing.
