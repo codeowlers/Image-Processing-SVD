@@ -21,42 +21,19 @@ import numpy as np
 # In summary, the matrices U, Σ, and V^T returned from the SVD of a matrix A provide a way to decompose A into its
 # constituent parts, and they have many useful applications in linear algebra and beyond.
 
+
 def svd(matrix):
-    """
-    Computes the Singular Value Decomposition of a matrix using the power iteration method.
-
-    Parameters:
-        matrix (ndarray): The input matrix.
-
-    Returns:
-        U (ndarray): The left singular vectors.
-        s (ndarray): The singular values.
-        Vt (ndarray): The right singular vectors (transposed).
-    """
-    # Compute the matrix product of A and A_transpose to find the eigenvalues
-    A = matrix @ matrix.T
-    n = matrix.shape[0]
-
-    # Use the eig function to find the eigenvalues and eigenvectors
-    eigenvalues, eigenvectors = np.linalg.eig(A)
-
-    # Sort the eigenvectors in descending order of eigenvalues
-    sorted_indices = np.argsort(eigenvalues)[::-1]
-    eigenvectors = eigenvectors[:, sorted_indices]
-
-    # Calculate the singular values
-    s = np.sqrt(eigenvalues[sorted_indices])
-
-    # Compute the right singular vectors
-    Vt = (eigenvectors.T @ matrix) / s
-
-    # Compute the left singular vectors
-    U = np.zeros((n, n))
-    for i in range(n):
-        U[:, i] = matrix @ Vt[:, i]
-
-    return U, s, Vt
-
+    transpose = np.transpose(matrix)
+    square_matrix = np.dot(matrix, transpose)
+    eigenvalues, eigenvectors = np.linalg.eig(square_matrix)
+    indices = eigenvalues.argsort()[::-1]
+    eigenvalues = eigenvalues[indices]
+    eigenvectors = eigenvectors[:, indices]
+    diagonal_matrix = np.zeros_like(square_matrix)
+    np.fill_diagonal(diagonal_matrix, np.sqrt(eigenvalues))
+    U = np.dot(eigenvectors.T, matrix).T
+    V = np.dot(np.dot(transpose, eigenvectors), np.linalg.inv(diagonal_matrix))
+    return U, diagonal_matrix, V
 
 # This code computes the SVD of a matrix using the fact that the left singular vectors can be computed as the
 # eigenvectors of the matrix product A * A_transpose, and the right singular vectors can be computed from the
@@ -66,3 +43,14 @@ def svd(matrix):
 # This implementation handles the case where the matrix is not full rank by using the eig function to compute the
 # eigenvalues and eigenvectors of A. Note that this code assumes that the matrix is square, since the left singular
 # vectors are computed as a matrix product involving the original matrix.
+
+
+
+# Find the transpose of the matrix.
+# Multiply the matrix and its transpose to get a square matrix.
+# Find the eigenvalues and eigenvectors of the square matrix.
+# Sort the eigenvalues in decreasing order and arrange the corresponding eigenvectors in the same order.
+# Form the diagonal matrix by placing the square root of the eigenvalues along the diagonal.
+# Multiply the original matrix with the eigenvectors to get the U matrix.
+# Multiply the transpose of the matrix with the eigenvectors and multiply it with the inverse of the diagonal matrix to get the V matrix.
+# Return the U, S, and V matrices as the SVD of the original matrix.
