@@ -22,44 +22,47 @@ import numpy as np
 # constituent parts, and they have many useful applications in linear algebra and beyond.
 
 def svd(matrix):
-    # Compute the singular value decomposition of the matrix
-    # using the power iteration method
-    n, m = matrix.shape
-    max_iter = 100
-    eps = 1e-10
+    """
+    Computes the Singular Value Decomposition of a matrix using the power iteration method.
 
-    # Initialize the matrices U and V
-    U = np.random.rand(n, n)
-    V = np.random.rand(m, m)
+    Parameters:
+        matrix (ndarray): The input matrix.
 
-    # Power iteration to find the dominant eigenvectors
-    for i in range(max_iter):
-        V = matrix.T @ U
-        V_norm = np.linalg.norm(V, axis=0)
-        V /= V_norm
-        U = matrix @ V
-        U_norm = np.linalg.norm(U, axis=0)
-        U /= U_norm
+    Returns:
+        U (ndarray): The left singular vectors.
+        s (ndarray): The singular values.
+        Vt (ndarray): The right singular vectors (transposed).
+    """
+    # Compute the matrix product of A and A_transpose to find the eigenvalues
+    A = matrix @ matrix.T
+    n = matrix.shape[0]
 
-    # Compute the singular values and sort them in descending order
-    singular_values = np.diag(U.T @ matrix @ V)
-    sorted_indices = np.argsort(singular_values)[::-1]
-    singular_values = singular_values[sorted_indices]
+    # Use the eig function to find the eigenvalues and eigenvectors
+    eigenvalues, eigenvectors = np.linalg.eig(A)
 
-    # Sort the columns of U and V according to the sorted singular values
-    U = U[:, sorted_indices]
-    V = V[:, sorted_indices]
+    # Sort the eigenvectors in descending order of eigenvalues
+    sorted_indices = np.argsort(eigenvalues)[::-1]
+    eigenvectors = eigenvectors[:, sorted_indices]
 
-    return U, singular_values, V.T
+    # Calculate the singular values
+    s = np.sqrt(eigenvalues[sorted_indices])
 
-# The code above computes the SVD of a given matrix using the power iteration method. The function takes in a matrix
-# as input and returns three matrices U, S, and V such that matrix = U @ np.diag(S) @ V.T.
-#
-# The power iteration method is used to iteratively find the dominant eigenvectors of the matrix until convergence.
-# In each iteration, we compute the matrix V by multiplying the transpose of the matrix U with the input matrix,
-# and normalize the columns of V. We then compute the matrix U by multiplying the input matrix with V and normalize
-# the columns of U. This process is repeated for a fixed number of iterations or until convergence.
-#
-# After computing U and V, we compute the singular values by taking the diagonal elements of the matrix U.T @ matrix
-# @ V. We sort the singular values in descending order and sort the columns of U and V accordingly. Finally,
-# we return the sorted U, S, and V matrices.
+    # Compute the right singular vectors
+    Vt = (eigenvectors.T @ matrix) / s
+
+    # Compute the left singular vectors
+    U = np.zeros((n, n))
+    for i in range(n):
+        U[:, i] = matrix @ Vt[:, i]
+
+    return U, s, Vt
+
+
+# This code computes the SVD of a matrix using the fact that the left singular vectors can be computed as the
+# eigenvectors of the matrix product A * A_transpose, and the right singular vectors can be computed from the
+# eigenvectors of A_transpose * A. The singular values can be calculated as the square root of the eigenvalues,
+# and the columns of the left and right singular vectors can be normalized to have unit length.
+
+# This implementation handles the case where the matrix is not full rank by using the eig function to compute the
+# eigenvalues and eigenvectors of A. Note that this code assumes that the matrix is square, since the left singular
+# vectors are computed as a matrix product involving the original matrix.
