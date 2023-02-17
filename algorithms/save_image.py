@@ -22,5 +22,10 @@ def save_image(data, image_type, onlySize=False):
     if onlySize is True:
         # Delete the saved image
         os.remove(path)   
+    else:
+        print("Image saved in path: " ,path)
 
-    return size 
+    print(f"Image size: {size} mb")
+
+
+    return size, path
